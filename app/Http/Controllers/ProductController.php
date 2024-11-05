@@ -29,7 +29,10 @@ class ProductController extends Controller //コントローラークラスを�
         if($search = $request->search){
             $query->where('product_name', 'LIKE', "%{$search}%");
         }
-    
+
+        if($company_id = $request->company_id){
+            $query->where('company_id', '=', $company_id);
+        }
         // 最小価格が指定されている場合、その価格以上の商品をクエリに追加
         if($min_price = $request->min_price){
             $query->where('price', '>=', $min_price);
@@ -52,9 +55,10 @@ class ProductController extends Controller //コントローラークラスを�
     
         // 上記の条件(クエリ）に基づいて商品を取得し、10件ごとのページネーションを適用
         $products = $query->paginate(10);
-    
+        $companies = Company::all();
+
         // 商品一覧ビューを表示し、取得した商品情報をビューに渡す
-        return view('products.index', ['products' => $products]);
+        return view('products.index', ['products' => $products, 'companies'=> $companies]);
     }
     
 
