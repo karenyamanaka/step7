@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 use App\Models\Product; // Productモデルを現在のファイルで使用できるようにするための宣言です。
 use App\Models\Company; // Companyモデルを現在のファイルで使用できるようにするための宣言です。
 use Illuminate\Http\Request; // Requestクラスという機能を使えるように宣言します
+use App\Http\Requests\ArticleRequest;
+use Illuminate\Support\Facades\DB;
 // Requestクラスはブラウザに表示させるフォームから送信されたデータをコントローラのメソッドで引数として受け取ることができます。
 
 class ProductController extends Controller //コントローラークラスを継承します（コントローラーの機能が使えるようになります）
@@ -19,10 +21,10 @@ class ProductController extends Controller //コントローラークラスを�
         // そして、最終的にそのクエリを実行するためのメソッド（例：get(), first(), paginate() など）を呼び出すことで、データベースに対してクエリを実行します。
         if($sort = $request->sort){
             $direction = $request->direction == 'desc' ? 'desc' : 'asc'; 
-    // もし $request->direction の値が 'desc' であれば、'desc' を返す。
-    // そうでなければ'asc' を返す
+        // もし $request->direction の値が 'desc' であれば、'desc' を返す。
+        // そうでなければ'asc' を返す
             $query->orderBy($sort, $direction);
-    // orderBy('カラム名', '並び順')
+    
     
         }
         // 商品名の検索キーワードがある場合、そのキーワードを含む商品をクエリに追加
@@ -74,27 +76,10 @@ class ProductController extends Controller //コントローラークラスを�
     }
 
     // 送られたデータをデータベースに保存するメソッドです
-    public function store(Request $request) // フォームから送られたデータを　$requestに代入して引数として渡している
+    public function store(ArticleRequest $request) // フォームから送られたデータを　$requestに代入して引数として渡している
     {
-        // リクエストされた情報を確認して、必要な情報が全て揃っているかチェックします。
-        // ->validate()メソッドは送信されたリクエストデータが
-        // 特定の条件を満たしていることを確認します。
-        $request->validate([
-            'product_name' => 'required', //requiredは必須という意味です
-            'company_id' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'comment' => 'nullable', //'nullable'はそのフィールドが未入力でもOKという意味です
-            'img_path' => 'nullable|image|max:2048',
-        ]);
-        // '|'はパイプと呼ばれる記号で、バリデーションルールを複数指定するときに使います
-        // 'image'はそのフィールドが画像ファイルであることを指定するルールです
-        // max:2048'は最大2048KB（2メガバイト）までという意味です
-        
-        // フォームが一部空欄のまま送信ボタンを押しても、フォームの画面にリダイレクトされ
-        // フォームの値が未入力である旨の警告メッセージが表示されます
-
-
+        DB::beginTransaction();
+        try{
         // 新しく商品を作ります。そのための情報はリクエストから取得します。
         $product = new Product([
             'product_name' => $request->get('product_name'),
@@ -128,6 +113,11 @@ class ProductController extends Controller //コントローラークラスを�
         // 作成したデータベースに新しいレコードとして保存します。
         $product->save();
 
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back();
+        }
         // 全ての処理が終わったら、商品一覧画面に戻ります。
         return redirect('products');
     }
@@ -151,30 +141,36 @@ class ProductController extends Controller //コントローラークラスを�
         return view('products.edit', compact('product', 'companies'));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(ArticleRequest $request, Product $product)
     {
         // リクエストされた情報を確認して、必要な情報が全て揃っているかチェックします。
-        $request->validate([
-            'product_name' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-        ]);
+            // $request->validate([
+                //    'product_name' => 'required',
+                //   'price' => 'required',
+                //  'stock' => 'required',
+                //]);
         //バリデーションによりフォームに未入力項目があればエラーメッセー発生させる（未入力です　など）
+                DB::beginTransaction();
 
-        // 商品の情報を更新します。
-        $product->product_name = $request->product_name;
-        //productモデルのproduct_nameをフォームから送られたproduct_nameの値に書き換える
-        $product->price = $request->price;
-        $product->stock = $request->stock;
+        try{
+            // 商品の情報を更新します。
+            $product->product_name = $request->product_name;
+            //productモデルのproduct_nameをフォームから送られたproduct_nameの値に書き換える
+            $product->price = $request->price;
+            $product->stock = $request->stock;
 
-        // 更新した商品を保存します。
-        $product->save();
-        // モデルインスタンスである$productに対して行われた変更をデータベースに保存するためのメソッド（機能）です。
-
-        // 全ての処理が終わったら、商品一覧画面に戻ります。
-        return redirect()->route('products.index')
-            ->with('success', 'Product updated successfully');
-        // ビュー画面にメッセージを代入した変数(success)を送ります
+            // 更新した商品を保存します。
+            $product->save();
+            // モデルインスタンスである$productに対して行われた変更をデータベースに保存するためのメソッド（機能）です。
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back();
+        }
+            // 全ての処理が終わったら、商品一覧画面に戻ります。
+            return redirect()->route('products.index')
+                ->with('success', 'Product updated successfully');
+            // ビュー画面にメッセージを代入した変数(success)を送ります
     }
 
     public function destroy(Product $product)

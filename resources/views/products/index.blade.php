@@ -36,7 +36,7 @@
             @foreach ($products as $product)
                 <tr>
                     <td>{{ $product->product_name }}</td>
-                    <td>{{ $product->company->name }}</td>
+                    <td>{{ $product->company->company_name }}</td>
                     <td>{{ $product->price }}</td>
                     <td>{{ $product->stock }}</td>
                     <td>{{ $product->comment }}</td>

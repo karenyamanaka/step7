@@ -18,12 +18,12 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="product_name" class="form-label">商品名</label>
+                                <label for="product_name" class="form-label">商品名<span style="color: red;">*</span></label>
                                 <input type="text" class="form-control" id="product_name" name="product_name" value="{{ $product->product_name }}" required>
                             </div>
 
                             <div class="mb-3">
-                                <label for="company_id" class="form-label">会社</label>
+                                <label for="company_id" class="form-label">メーカー名<span style="color: red;">*</span></label>
                                 <select class="form-select" id="company_id" name="company_id">
                                     @foreach($companies as $company)
                                         <option value="{{ $company->id }}" {{ $product->company_id == $company->id ? 'selected' : '' }}>{{ $company->company_name }}</option>
@@ -32,12 +32,12 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="price" class="form-label">金額</label>
+                                <label for="price" class="form-label">金額<span style="color: red;">*</span></label>
                                 <input type="number" class="form-control" id="price" name="price" value="{{ $product->price }}" required>
                             </div>
 
                             <div class="mb-3">
-                                <label for="stock" class="form-label">在庫数</label>
+                                <label for="stock" class="form-label">在庫数<span style="color: red;">*</span></label>
                                 <input type="number" class="form-control" id="stock" name="stock" value="{{ $product->stock }}" required>
                             </div>
 
