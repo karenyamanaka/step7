@@ -19,7 +19,7 @@
 
                             <div class="mb-3">
                                 <label for="product_name" class="form-label">商品名<span style="color: red;">*</span></label>
-                                <input type="text" class="form-control" id="product_name" name="product_name" value="{{ $product->product_name }}" required>
+                                <input type="text" class="form-control" id="product_name" name="product_name" value="{{ $product->product_name }}">
                             </div>
 
                             <div class="mb-3">
@@ -33,12 +33,12 @@
 
                             <div class="mb-3">
                                 <label for="price" class="form-label">金額<span style="color: red;">*</span></label>
-                                <input type="number" class="form-control" id="price" name="price" value="{{ $product->price }}" required>
+                                <input type="number" class="form-control" id="price" name="price" value="{{ $product->price }}">
                             </div>
 
                             <div class="mb-3">
                                 <label for="stock" class="form-label">在庫数<span style="color: red;">*</span></label>
-                                <input type="number" class="form-control" id="stock" name="stock" value="{{ $product->stock }}" required>
+                                <input type="number" class="form-control" id="stock" name="stock" value="{{ $product->stock }}">
                             </div>
 
                             <div class="mb-3">

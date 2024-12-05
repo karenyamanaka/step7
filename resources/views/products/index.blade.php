@@ -6,7 +6,59 @@
 
     <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">商品新規登録</a>
 
+    <div class="search mt-5">
+    
+    <!-- 検索のタイトル -->
+    <h2>検索条件で絞り込み</h2>
+    
+    <!-- 検索フォーム。GETメソッドで、商品一覧のルートにデータを送信 -->
+    <form action="{{ route('products.index') }}" method="GET" class="row g-3">
 
+        <div class="col-sm-12 col-md-3">
+        <select class="form-select" id="company_id" name="company_id">
+                    @foreach($companies as $company)
+                        <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                    @endforeach
+                </select>
+                </div>
+        <!-- 商品名検索用の入力欄 -->
+        <div class="col-sm-12 col-md-3">
+            <input type="text" name="search" class="form-control" placeholder="商品名" value="{{ request('search') }}">
+        </div>
+
+        <!-- 最小価格の入力欄 -->
+        <div class="col-sm-12 col-md-2">
+            <input type="number" name="min_price" class="form-control" placeholder="最小価格" value="{{ request('min_price') }}">
+        </div>
+
+        <!-- 最大価格の入力欄 -->
+        <div class="col-sm-12 col-md-2">
+            <input type="number" name="max_price" class="form-control" placeholder="最大価格" value="{{ request('max_price') }}">
+        </div>
+
+        <!-- 最小在庫数の入力欄 -->
+        <div class="col-sm-12 col-md-2">
+            <input type="number" name="min_stock" class="form-control" placeholder="最小在庫" value="{{ request('min_stock') }}">
+        </div>
+
+        <!-- 最大在庫数の入力欄 -->
+        <div class="col-sm-12 col-md-2">
+            <input type="number" name="max_stock" class="form-control" placeholder="最大在庫" value="{{ request('max_stock') }}">
+        </div>
+
+        <!-- 絞り込みボタン -->
+        <div class="col-sm-12 col-md-1">
+            <button class="btn btn-outline-secondary" type="submit">絞り込み</button>
+        </div>
+    </form>
+</div>
+
+<!-- 検索条件をリセットするためのリンクボタン -->
+<a href="{{ route('products.index') }}" class="btn btn-success mt-3">検索条件を元に戻す</a>
+
+
+    
+</div>
 
     <div class="products mt-5">
         <h2>商品情報</h2>
@@ -61,57 +113,4 @@
     
     {{ $products->links() }}
     <!-- 検索フォームのセクション -->
-<div class="search mt-5">
-    
-    <!-- 検索のタイトル -->
-    <h2>検索条件で絞り込み</h2>
-    
-    <!-- 検索フォーム。GETメソッドで、商品一覧のルートにデータを送信 -->
-    <form action="{{ route('products.index') }}" method="GET" class="row g-3">
-
-        <div class="col-sm-12 col-md-3">
-        <select class="form-select" id="company_id" name="company_id">
-                    @foreach($companies as $company)
-                        <option value="{{ $company->id }}">{{ $company->company_name }}</option>
-                    @endforeach
-                </select>
-                </div>
-        <!-- 商品名検索用の入力欄 -->
-        <div class="col-sm-12 col-md-3">
-            <input type="text" name="search" class="form-control" placeholder="商品名" value="{{ request('search') }}">
-        </div>
-
-        <!-- 最小価格の入力欄 -->
-        <div class="col-sm-12 col-md-2">
-            <input type="number" name="min_price" class="form-control" placeholder="最小価格" value="{{ request('min_price') }}">
-        </div>
-
-        <!-- 最大価格の入力欄 -->
-        <div class="col-sm-12 col-md-2">
-            <input type="number" name="max_price" class="form-control" placeholder="最大価格" value="{{ request('max_price') }}">
-        </div>
-
-        <!-- 最小在庫数の入力欄 -->
-        <div class="col-sm-12 col-md-2">
-            <input type="number" name="min_stock" class="form-control" placeholder="最小在庫" value="{{ request('min_stock') }}">
-        </div>
-
-        <!-- 最大在庫数の入力欄 -->
-        <div class="col-sm-12 col-md-2">
-            <input type="number" name="max_stock" class="form-control" placeholder="最大在庫" value="{{ request('max_stock') }}">
-        </div>
-
-        <!-- 絞り込みボタン -->
-        <div class="col-sm-12 col-md-1">
-            <button class="btn btn-outline-secondary" type="submit">絞り込み</button>
-        </div>
-    </form>
-</div>
-
-<!-- 検索条件をリセットするためのリンクボタン -->
-<a href="{{ route('products.index') }}" class="btn btn-success mt-3">検索条件を元に戻す</a>
-
-
-    
-</div>
 @endsection
