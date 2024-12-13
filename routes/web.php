@@ -26,15 +26,28 @@ Route::get('/', function () {
 
 
 Auth::routes();
+//商品一覧画面
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+
+//商品登録フォーム
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+
+//商品追加
+Route::post('/products', [ProductsController::class, 'store'])->name('products.store');
+
+//商品詳細
+Route::get('/products/{product}', [ProductsController::class, 'show'])->name('products.show');
+
+//商品更新edit
+Route::get('/products/{product}/edit', [ProductsController::class, 'edit'])->name('products.edit');
+
+//商品更新update
+Route::put('/products/{product}', [ProductsController::class, 'update'])->name('products.update');
+
+//商品消去
+Route::delete('/products/{product}', [ProductsController::class, 'destroy'])->name('products.destroy');
 
 
-
-// Auth::routes();はLaravelが提供している便利な機能で
-// 一般的な認証に関するルーティングを自動的に定義してくれます
-// この一行を書くだけで、ログインやログアウト
-// パスワードのリセット、新規ユーザー登録などのための
-// ルートが作成されます。
-//　つまりログイン画面に用意されたビューのリンク先がこの1行で済みます
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('products', ProductController::class);
@@ -42,7 +55,5 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-
-Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

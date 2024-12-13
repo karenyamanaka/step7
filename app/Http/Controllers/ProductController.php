@@ -99,16 +99,7 @@ class ProductController extends Controller //コントローラークラスを�
             $filePath = $request->img_path->storeAs('products', $filename, 'public');
             $product->img_path = '/storage/' . $filePath;
         }
-        // $request->hasFile('img_path')は、ブラウザにアップロードされたファイルが存在しているかを確認
-        // getClientOriginalName()はアップロードしたファイル名を取得するメソッドです。
-       // storeAs('products', $filename, 'public')は
-       //  アップロードされたファイルを特定の場所に特定の名前で保存するためのメソッドです
-       //　今回はstorage/app/publicにproducts" ディレクトリが作られ保存されます
-       //'products'：これはファイルを保存するディレクトリ（フォルダ）の名前を示しています。
-       // この場合は 'products' という名前のディレクトリにファイルが保存されます。
-    //$filename：これは保存するファイルの名前を示しています。
-    // getClientOriginalName() メソッドで取得したオリジナルのファイル名がここに入ります。
-    // 'public' ファイルのアクセス権限を示しています。'public' は公開設定で、誰でもこのファイルにアクセスすることができるようになります。
+
 
         // 作成したデータベースに新しいレコードとして保存します。
         $product->save();
@@ -116,6 +107,7 @@ class ProductController extends Controller //コントローラークラスを�
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
+            
             return back();
         }
         // 全ての処理が終わったら、商品一覧画面に戻ります。
@@ -143,28 +135,30 @@ class ProductController extends Controller //コントローラークラスを�
 
     public function update(ArticleRequest $request, Product $product)
     {
-        // リクエストされた情報を確認して、必要な情報が全て揃っているかチェックします。
-            // $request->validate([
-                //    'product_name' => 'required',
-                //   'price' => 'required',
-                //  'stock' => 'required',
-                //]);
-        //バリデーションによりフォームに未入力項目があればエラーメッセー発生させる（未入力です　など）
+           
                 DB::beginTransaction();
 
         try{
             // 商品の情報を更新します。
+        
             $product->product_name = $request->product_name;
             //productモデルのproduct_nameをフォームから送られたproduct_nameの値に書き換える
+            $product->company_id = $request->company_id;
             $product->price = $request->price;
             $product->stock = $request->stock;
-
+            $product->comment = $request->comment;
+            if($request->hasFile('img_path')){ 
+                $filename = $request->img_path->getClientOriginalName();
+                $filePath = $request->img_path->storeAs('products', $filename, 'public');
+                $product->img_path = '/storage/' . $filePath;
+            }
             // 更新した商品を保存します。
             $product->save();
             // モデルインスタンスである$productに対して行われた変更をデータベースに保存するためのメソッド（機能）です。
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
+            session()->flash('error', '入力必須です' . $e->getMessage());
             return back();
         }
             // 全ての処理が終わったら、商品一覧画面に戻ります。
@@ -173,11 +167,20 @@ class ProductController extends Controller //コントローラークラスを�
             // ビュー画面にメッセージを代入した変数(success)を送ります
     }
 
+
+    
     public function destroy(Product $product)
 //(Product $product) 指定されたIDで商品をデータベースから自動的に検索し、その結果を $product に割り当てます。
     {
+        DB::beginTransaction();
+        try{
         // 商品を削除します。
         $product->delete();
+        DB::commit(); } catch (\Exception $e) {
+            DB::rollback();
+            
+            return back();
+        }
 
         // 全ての処理が終わったら、商品一覧画面に戻ります。
         return redirect('/products');

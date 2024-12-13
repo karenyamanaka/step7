@@ -16,6 +16,7 @@
 
         <div class="col-sm-12 col-md-3">
         <select class="form-select" id="company_id" name="company_id">
+                    <option value="">すべてのメーカー</option>
                     @foreach($companies as $company)
                         <option value="{{ $company->id }}">{{ $company->company_name }}</option>
                     @endforeach
@@ -66,6 +67,7 @@
             <thead>
                 
                 <tr>
+                    <th>ID</th>
                     <th>商品名</th>
                     <th>メーカー</th>
                     <th>価格
@@ -87,6 +89,7 @@
             <tbody>
             @foreach ($products as $product)
                 <tr>
+                    <td>{{ $product->id}}</td>
                     <td>{{ $product->product_name }}</td>
                     <td>{{ $product->company->company_name }}</td>
                     <td>{{ $product->price }}</td>
@@ -96,7 +99,7 @@
                     </td>
                     <td>
                         <a href="{{ route('products.show', $product) }}" class="btn btn-info btn-sm mx-1">詳細表示</a>
-                        <a href="{{ route('products.edit', $product) }}" class="btn btn-primary btn-sm mx-1">編集</a>
+                        <!-- <a href="{{ route('products.edit', $product) }}" class="btn btn-primary btn-sm mx-1">編集</a> -->
                         <form method="POST" action="{{ route('products.destroy', $product) }}" class="d-inline">
                             @csrf
                             @method('DELETE')
