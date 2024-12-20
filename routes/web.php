@@ -51,8 +51,11 @@ Route::delete('/products/{product}', [ProductsController::class, 'destroy'])->na
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('products', ProductController::class);
-    // 商品詳細画面
+
 });
+
+
+
 
 
 
