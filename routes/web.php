@@ -26,32 +26,31 @@ Route::get('/', function () {
 
 
 Auth::routes();
-//商品一覧画面
+
+
+
+
+Route::group(['middleware' => 'auth'], function () {
+   
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 //商品登録フォーム
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 
 //商品追加
-Route::post('/products', [ProductsController::class, 'store'])->name('products.store');
+Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 
 //商品詳細
-Route::get('/products/{product}', [ProductsController::class, 'show'])->name('products.show');
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 //商品更新edit
-Route::get('/products/{product}/edit', [ProductsController::class, 'edit'])->name('products.edit');
+Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
 
 //商品更新update
-Route::put('/products/{product}', [ProductsController::class, 'update'])->name('products.update');
+Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 
 //商品消去
-Route::delete('/products/{product}', [ProductsController::class, 'destroy'])->name('products.destroy');
-
-
-
-Route::group(['middleware' => 'auth'], function () {
-    Route::resource('products', ProductController::class);
-
+Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
 
 
