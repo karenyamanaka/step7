@@ -8,6 +8,7 @@ use App\Models\Company; // Companyモデルを現在のファイルで使用で�
 use Illuminate\Http\Request; // Requestクラスという機能を使えるように宣言します
 use App\Http\Requests\ArticleRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 // Requestクラスはブラウザに表示させるフォームから送信されたデータをコントローラのメソッドで引数として受け取ることができます。
 
 class ProductController extends Controller //コントローラークラスを継承します（コントローラーの機能が使えるようになります）
@@ -61,9 +62,19 @@ class ProductController extends Controller //コントローラークラスを�
 
         // 商品一覧ビューを表示し、取得した商品情報をビューに渡す
         return view('products.index', ['products' => $products, 'companies'=> $companies]);
-    }
+    
+        // ソートのパラメータが指定されている場合、そのカラムでソートを行う
+        if($sort = $request->sort){
+            $direction = $request->direction == 'desc' ? 'desc' : 'asc'; // directionがdescでない場合は、デフォルトでascとする
+            $query->orderBy($sort, $direction);
+        }
+
     
 
+    
+    }
+    
+    
 
 
     public function create()
@@ -171,12 +182,17 @@ class ProductController extends Controller //コントローラークラスを�
     
     public function destroy(Product $product)
 //(Product $product) 指定されたIDで商品をデータベースから自動的に検索し、その結果を $product に割り当てます。
-    {
+   
+    {Log::info($product);
         DB::beginTransaction();
         try{
         // 商品を削除します。
         $product->delete();
-        DB::commit(); } catch (\Exception $e) {
+        DB::commit(); 
+        return response()->json(['success' => 'Product deleted successfully.']);
+        
+        } catch (\Exception $e) {
+            Log::error($e);
             DB::rollback();
             
             return back();

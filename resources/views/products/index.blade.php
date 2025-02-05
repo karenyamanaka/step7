@@ -12,7 +12,8 @@
     <h2>検索条件で絞り込み</h2>
     
     <!-- 検索フォーム。GETメソッドで、商品一覧のルートにデータを送信 -->
-    <form action="{{ route('products.index') }}" method="GET" class="row g-3">
+    <form id="searchForm" action="{{ route('products.index') }}" method="GET" class="row g-3">
+
 
         <div class="col-sm-12 col-md-3">
         <select class="form-select" id="company_id" name="company_id">
@@ -28,28 +29,28 @@
         </div>
 
         <!-- 最小価格の入力欄 -->
-        <!-- <div class="col-sm-12 col-md-2"> -->
-         <!--   <input type="number" name="min_price" class="form-control" placeholder="最小価格" value="{{ request('min_price') }}"> -->
-        <!--</div>-->
+        <div class="col-sm-12 col-md-2"> 
+         <input type="number" name="min_price" class="form-control" placeholder="最小価格" value="{{ request('min_price') }}"> 
+        </div>
 
         <!-- 最大価格の入力欄 -->
-        <!--<div class="col-sm-12 col-md-2">-->
-           <!-- <input type="number" name="max_price" class="form-control" placeholder="最大価格" value="{{ request('max_price') }}">-->
-       <!-- </div>-->
+        <div class="col-sm-12 col-md-2">
+           <input type="number" name="max_price" class="form-control" placeholder="最大価格" value="{{ request('max_price') }}">
+       </div>
 
        <!--  最小在庫数の入力欄 -->
-       <!-- <div class="col-sm-12 col-md-2">-->
-           <!-- <input type="number" name="min_stock" class="form-control" placeholder="最小在庫" value="{{ request('min_stock') }}">-->
-        <!--</div>-->
+        <div class="col-sm-12 col-md-2">
+           <input type="number" name="min_stock" class="form-control" placeholder="最小在庫" value="{{ request('min_stock') }}">
+        </div>
 
        <!--  最大在庫数の入力欄 -->
-        <!--<div class="col-sm-12 col-md-2">-->
-            <!--<input type="number" name="max_stock" class="form-control" placeholder="最大在庫" value="{{ request('max_stock') }}">-->
-      <!--  </div>-->
+        <div class="col-sm-12 col-md-2">
+            <input type="number" name="max_stock" class="form-control" placeholder="最大在庫" value="{{ request('max_stock') }}">
+        </div>
 
         <!-- 絞り込みボタン -->
         <div class="col-sm-12 col-md-1">
-            <button class="btn btn-outline-secondary" type="submit">絞り込み</button>
+            <button class="btn btn-outline-secondary" type="submit">検索</button>
         </div>
     </form>
 </div>
@@ -66,23 +67,25 @@
         <table class="table table-striped">
             <thead>
                 
-                <tr>
-                    <th>ID</th>
-                    <th>商品名</th>
-                    <th>メーカー</th>
-                    <th>価格
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'asc']) }}">↑</a>
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'desc']) }}">↓</a>
-                    </th>
-                    <th>
-                        在庫数
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'asc']) }}">↑</a>
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'desc']) }}">↓</a>
-                    </th>
-                    <th>コメント</th>
-                    <th>商品画像</th>
-                    <th>操作</th>
-                </tr>
+               
+ <tr>
+    <th>商品名</th>
+    <th>メーカー</th>
+    <th>価格
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'asc']) }}">↑</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'desc']) }}">↓</a>
+    </th>
+    <th>
+        在庫数
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'asc']) }}">↑</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'desc']) }}">↓</a>
+    </th>
+    <th>コメント</th>
+    <th>商品画像</th>
+    <th>操作</th>
+</tr>
+
+
 
 
             </thead>
@@ -100,11 +103,11 @@
                     <td>
                         <a href="{{ route('products.show', $product) }}" class="btn btn-info btn-sm mx-1">詳細表示</a>
                         <!-- <a href="{{ route('products.edit', $product) }}" class="btn btn-primary btn-sm mx-1">編集</a> -->
-                        <form method="POST" action="{{ route('products.destroy', $product) }}" class="d-inline">
+                        <form method="POST" action="{{ route('products.destroy', $product) }}" class="d-inline" >
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm mx-1"
-                            onclick="return confirm('本当に削除しますか？')">削除</button>
+                            <button type="submit" class="btn btn-danger btn-sm mx-1 deleteTarget" data-product-id="{{ $product->id }}">
+                            削除</button>
                         </form>
                     </td>
                 </tr>
@@ -116,4 +119,6 @@
     
     {{ $products->links() }}
     <!-- 検索フォームのセクション -->
+</div>
+
 @endsection
