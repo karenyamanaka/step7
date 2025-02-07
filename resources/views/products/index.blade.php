@@ -69,17 +69,16 @@
                 
                
  <tr>
-    <th>ID</th>
+    <th>
+    <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}">ID</a>
+    </th>
     <th>商品名</th>
     <th>メーカー</th>
-    <th>価格
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'asc']) }}">↑</a>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => 'desc']) }}">↓</a>
-    </th>
     <th>
-        在庫数
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'asc']) }}">↑</a>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => 'desc']) }}">↓</a>
+    <a href="{{ request()->fullUrlWithQuery(['sort' => 'price', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}">価格</a>
+    </th>
+    <th>  
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}">在庫数</a>
     </th>
     <th>コメント</th>
     <th>商品画像</th>
